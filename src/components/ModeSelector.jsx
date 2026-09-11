@@ -10,9 +10,9 @@ function ModeSelector() {
 
       <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "30px" }}>
         <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/doctor-dashboard")}>Doctor</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/patient-intake")}>Patient</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/patient-intake?mode=staff")}>Staff</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/patient-intake?mode=relative")}>Relative</button>
+        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language")}>Patient</button>
+        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language?mode=staff")}>Staff</button>
+        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language?mode=relative")}>Relative</button>
       </div>
     </div>
   );

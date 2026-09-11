@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-// Fake queue of patients waiting for doctor review — stand-in for real backend data
 const fakePatientQueue = [
   {
     id: 1,
@@ -38,35 +37,29 @@ function DoctorDashboard() {
   const [selectedPatient, setSelectedPatient] = useState(null);
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <div style={{ width: "220px", backgroundColor: "#1a2a33", color: "white", padding: "20px" }}>
-        <h2 style={{ fontSize: "20px" }}>MedNarrate</h2>
-        <p style={{ color: "#aaa", fontSize: "14px" }}>Doctor Dashboard</p>
-        <hr style={{ borderColor: "#333" }} />
-        <p style={{ marginTop: "20px" }}>📋 Patient Queue</p>
+    <div className="doctor-layout">
+      <div className="doctor-sidebar">
+        <h2>MedNarrate</h2>
+        <p>Doctor Dashboard</p>
+        <hr />
+        <div className="doctor-nav-item">📋 Patient Queue</div>
       </div>
 
-      {/* Main content */}
-      <div style={{ flex: 1, padding: "30px" }}>
+      <div className="doctor-main">
         {!selectedPatient ? (
           <div>
-            <h2>Today's Patient Queue</h2>
+            <h2 className="doctor-heading">Today's Patient Queue</h2>
             {fakePatientQueue.map((patient) => (
               <div
                 key={patient.id}
                 onClick={() => setSelectedPatient(patient)}
-                style={{
-                  padding: "15px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                  marginBottom: "10px",
-                  cursor: "pointer",
-                  backgroundColor: patient.flagged ? "#fff3cd" : "#fff"
-                }}
+                className={`queue-item ${patient.flagged ? "flagged" : ""}`}
               >
-                <strong>{patient.name}</strong> — via {patient.submittedVia}
-                {patient.flagged && <span style={{ color: "#cc8400", marginLeft: "10px" }}>⚠️ Flagged</span>}
+                <div>
+                  <div className="queue-item-name">{patient.name}</div>
+                  <div className="queue-item-meta">via {patient.submittedVia}</div>
+                </div>
+                {patient.flagged && <span className="flag-pill">⚠️ Flagged</span>}
               </div>
             ))}
           </div>
@@ -82,43 +75,66 @@ function PatientCaseDetail({ patient, onBack }) {
   const [diagnosis, setDiagnosis] = useState("");
   const [followUpDays, setFollowUpDays] = useState("");
   const [confirmed, setConfirmed] = useState(false);
-  
 
-     if (confirmed) {
-     return (
-       <div>
-         <h2>Case Saved</h2>
-         <p>{patient.name}'s case has been finalized.</p>
-         {followUpDays && <p>Follow-up scheduled in {followUpDays} days.</p>}
-         {prescriptionImage && (
-           <div style={{ marginTop: "10px" }}>
-             <p>Prescription attached:</p>
-             <img src={prescriptionImage} alt="Prescription" style={{ maxWidth: "200px", borderRadius: "8px", border: "1px solid #ccc" }} />
-           </div>
-         )}
-         <button onClick={onBack} style={{ padding: "10px 20px", marginTop: "10px" }}>
-           Back to Queue
-         </button>
-       </div>
-     );
-   }
+  if (confirmed) {
+    const summaryText = `MedNarrate Case Summary
+Patient: ${patient.name}
+Submitted via: ${patient.submittedVia}
+Diagnosis/Treatment: ${diagnosis || "N/A"}
+Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
+
+    function handlePrint() {
+      window.print();
+    }
+
+    function handleEmailShare() {
+      const subject = encodeURIComponent(`Case Summary - ${patient.name}`);
+      const body = encodeURIComponent(summaryText);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function handleWhatsAppShare() {
+      const text = encodeURIComponent(summaryText);
+      window.open(`https://wa.me/?text=${text}`, "_blank");
+    }
+
+    return (
+      <div className="case-card" id="printable-case-sheet">
+        <h2 className="doctor-heading case-file-heading">MedNarrate — Case File</h2>
+        <p><strong>Patient:</strong> {patient.name}</p>
+        <p><strong>Submitted via:</strong> {patient.submittedVia}</p>
+        <p><strong>Diagnosis/Treatment:</strong> {diagnosis || "N/A"}</p>
+        {followUpDays && <p><strong>Follow-up:</strong> in {followUpDays} days</p>}
+
+        <div style={{ marginTop: "20px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+          <button className="btn-secondary" onClick={handlePrint}>🖨️ Print</button>
+          <button className="btn-secondary" onClick={handleEmailShare}>📧 Email</button>
+          <button className="btn-secondary" onClick={handleWhatsAppShare}>💬 WhatsApp</button>
+        </div>
+
+        <button className="btn-primary" onClick={onBack} style={{ display: "block", marginTop: "20px" }}>
+          Back to Queue
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <button onClick={onBack} style={{ marginBottom: "20px" }}>← Back to Queue</button>
-      <h2>{patient.name}</h2>
-      <p><strong>Submitted via:</strong> {patient.submittedVia}</p>
+    <div className="case-card">
+      <button className="back-link" onClick={onBack}>← Back to Queue</button>
+      <h2 className="doctor-heading">{patient.name}</h2>
+      <p style={{ color: "var(--text-dim)" }}><strong>Submitted via:</strong> {patient.submittedVia}</p>
 
       {patient.flagged && (
-        <div style={{ backgroundColor: "#fff3cd", border: "1px solid #ffcc00", padding: "15px", borderRadius: "8px", margin: "15px 0" }}>
+        <div className="case-warning">
           ⚠️ Patient states no diabetes, but past records show a Metformin prescription. Please verify.
         </div>
       )}
 
       {patient.answers && (
-        <ul>
+        <ul style={{ paddingLeft: "18px", color: "var(--text)" }}>
           {patient.answers.map((a, i) => (
-            <li key={i}>{a}</li>
+            <li key={i} style={{ marginBottom: "4px" }}>{a}</li>
           ))}
         </ul>
       )}
@@ -132,37 +148,28 @@ function PatientCaseDetail({ patient, onBack }) {
       )}
 
       <div style={{ marginTop: "20px" }}>
-        <p>
-          Diagnosis / Treatment notes:<br />
-          <textarea
-            value={diagnosis}
-            onChange={(e) => setDiagnosis(e.target.value)}
-            style={{ width: "100%", height: "80px", padding: "8px" }}
-          />
-        </p>
-        <p>
-          Follow-up in how many days?{" "}
-          <input
-            type="number"
-            value={followUpDays}
-            onChange={(e) => setFollowUpDays(e.target.value)}
-            style={{ padding: "8px", width: "80px" }}
-          />
-        </p>
+        <p style={{ fontWeight: "600", marginBottom: "6px" }}>Diagnosis / Treatment notes</p>
+        <textarea
+          className="case-textarea"
+          value={diagnosis}
+          onChange={(e) => setDiagnosis(e.target.value)}
+        />
 
-        {prescriptionImage && (
-          <div style={{ marginTop: "10px" }}>
-            <img src={prescriptionImage} alt="Prescription preview" style={{ maxWidth: "200px", borderRadius: "8px", border: "1px solid #ccc" }} />
-          </div>
-        )}
+        <p style={{ fontWeight: "600", margin: "15px 0 6px" }}>Follow-up in how many days?</p>
+        <input
+          type="number"
+          value={followUpDays}
+          onChange={(e) => setFollowUpDays(e.target.value)}
+          className="styled-input"
+          style={{ width: "100px" }}
+        />
       </div>
 
-      <button
-        style={{ marginTop: "15px", padding: "12px 25px", fontSize: "16px" }}
-        onClick={() => setConfirmed(true)}
-      >
-        Doctor Confirms & Save
-      </button>
+      <div>
+        <button className="btn-primary" onClick={() => setConfirmed(true)}>
+          Doctor Confirms & Save
+        </button>
+      </div>
     </div>
   );
 }
