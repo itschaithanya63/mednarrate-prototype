@@ -145,7 +145,9 @@ if (emergencyDetected) {
     <div className="patient-world">
       <div className="thankyou-icon">✅</div>
       <h2 className="thankyou-title">Thank you</h2>
-      <p style={{ color: "#666" }}>Please wait for the doctor.</p>
+      <p style={{ color: "#666" }}>
+  The doctor will review your case and confirm the diagnosis and prescription. You'll receive it via WhatsApp, email, or a printed copy based on your choice.
+</p>
       <button className="btn-primary" onClick={() => (window.location.href = "/")}>
         Return to Home
       </button>

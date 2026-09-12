@@ -58,7 +58,9 @@ function StaffVitals() {
       <div className="patient-world">
         <div className="thankyou-icon">✅</div>
         <h2 className="thankyou-title">Thank you</h2>
-        <p style={{ color: "var(--text-dim)" }}>Vitals recorded. Please wait for the doctor.</p>
+        <p style={{ color: "var(--text-dim)" }}>
+  Vitals recorded. The doctor will review and confirm the diagnosis and prescription, which will be shared via WhatsApp, email, or a printed copy.
+</p>
         <button className="btn-primary" onClick={() => (window.location.href = "/")}>
           Return to Home
         </button>
