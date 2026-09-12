@@ -352,14 +352,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.splash-title {
-  font-family: 'Inter', sans-serif;
-  font-size: 40px;
-  font-weight: 700;
-  color: white;
-  animation: splashPop 0.6s ease-out forwards;
-  margin: 0;
-}
 .splash-tagline {
   color: #B9CBE0;
   font-size: 15px;
@@ -371,31 +363,28 @@ body {
 /* ---------- Floating ambient quotes ---------- */
 .floating-quote {
   position: absolute;
-  color: rgba(29, 95, 163, 0.18);
+  color: rgba(29, 95, 163, 0.35);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 20px;
   white-space: nowrap;
   pointer-events: none;
   z-index: 1;
+  opacity: 0;
+  animation: quoteAppear 6s ease-in-out infinite;
 }
-@keyframes floatUpRight {
-  from { transform: translate(0, 100vh) rotate(-3deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  to { transform: translate(50px, -20vh) rotate(-3deg); opacity: 0; }
+@keyframes quoteAppear {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  20% { opacity: 1; }
+  28% { opacity: 0; }
+  100% { opacity: 0; }
 }
-@keyframes floatUpLeft {
-  from { transform: translate(0, 100vh) rotate(2deg); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  to { transform: translate(-40px, -20vh) rotate(2deg); opacity: 0; }
-}
-.floating-quote-0 { left: 10%; animation: floatUpRight 6s ease-in-out infinite; animation-delay: 0s; }
-.floating-quote-1 { left: 65%; animation: floatUpLeft 7s ease-in-out infinite; animation-delay: 1s; }
-.floating-quote-2 { left: 30%; animation: floatUpRight 8s ease-in-out infinite; animation-delay: 2s; }
-.floating-quote-3 { left: 75%; animation: floatUpRight 6.5s ease-in-out infinite; animation-delay: 0.5s; }
-.floating-quote-4 { left: 45%; animation: floatUpLeft 7.5s ease-in-out infinite; animation-delay: 1.5s; }
+.floating-quote-0 { top: 12%; left: 12%; animation-delay: 0s; }
+.floating-quote-1 { top: 20%; left: 62%; animation-delay: 1.5s; }
+.floating-quote-2 { top: 70%; left: 20%; animation-delay: 3s; }
+.floating-quote-3 { top: 78%; left: 60%; animation-delay: 4.5s; }
+.floating-quote-4 { top: 45%; left: 40%; animation-delay: 6s; }
 
 /* ---------- 17. Print ---------- */
 @media print {
@@ -410,4 +399,96 @@ body {
   .patient-world, .case-card { margin: 20px 14px; padding: 22px; }
   .doctor-sidebar { width: 100%; min-height: auto; }
   .doctor-layout { flex-direction: column; }
+}
+
+/* ---------- Landing screen ---------- */
+.landing-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy);
+  padding: 20px;
+}
+
+.landing-cards {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.landing-card {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  width: 220px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.landing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+}
+.landing-icon { font-size: 40px; margin-bottom: 10px; }
+.landing-card h2 { color: var(--navy); margin: 0 0 8px; }
+.landing-card p { color: var(--text-dim); font-size: 13px; margin: 0; }
+
+/* ---------- Reminders ---------- */
+.reminder-item {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--blue);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: white;
+  font-size: 14px;
+}
+
+/* ---------- Splash screen v2 (letter-by-letter title) ---------- */
+.splash-title {
+  display: flex;
+  font-family: 'Inter', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: white;
+}
+.splash-letter {
+  opacity: 0;
+  transform: translateY(15px);
+  animation: splashLetterIn 0.4s ease-out forwards;
+}
+@keyframes splashLetterIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.splash-ring {
+  fill: none;
+  stroke: var(--teal);
+  stroke-width: 2;
+  opacity: 0.6;
+  transform-origin: center;
+}
+.splash-ring-1 { animation: ringPulse 2s ease-out infinite; }
+.splash-ring-2 { animation: ringPulse 2s ease-out infinite 1s; }
+@keyframes ringPulse {
+  0% { transform: scale(0.6); opacity: 0.8; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+.splash-dot {
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { r: 6; }
+  50% { r: 9; }
+}
+.queue-item.emergency {
+  background: var(--red-light);
+  border-left: 5px solid var(--red);
+}
+.emergency-pill {
+  background: var(--red);
 }

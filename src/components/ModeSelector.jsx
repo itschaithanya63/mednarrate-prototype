@@ -4,15 +4,20 @@ function ModeSelector() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>MedNarrate</h1>
-      <p>Who is logging in?</p>
+    <div className="patient-world">
+      <h1 className="patient-title">Who is providing information?</h1>
+      <p className="patient-subtitle">Choose the option that fits the patient's situation</p>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "30px" }}>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/doctor-dashboard")}>Doctor</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language")}>Patient</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language?mode=staff")}>Staff</button>
-        <button style={{ padding: "15px 30px", fontSize: "16px" }} onClick={() => navigate("/language?mode=relative")}>Relative</button>
+      <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap", marginTop: "10px" }}>
+        <button className="btn-primary" style={{ marginTop: 0 }} onClick={() => navigate("/language")}>
+          Patient (self)
+        </button>
+        <button className="btn-secondary" style={{ marginTop: 0 }} onClick={() => navigate("/language?mode=staff")}>
+          Staff (unconscious patient)
+        </button>
+        <button className="btn-secondary" style={{ marginTop: 0 }} onClick={() => navigate("/language?mode=relative")}>
+          Relative
+        </button>
       </div>
     </div>
   );

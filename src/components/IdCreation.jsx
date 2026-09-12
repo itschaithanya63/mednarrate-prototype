@@ -1,188 +1,89 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const loginQuotes = [
+  "Every story matters.",
+  "Care begins with listening.",
+  "Healing takes time.",
+  "Small steps, real progress."
+];
+
 function IdCreation() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [contact, setContact] = useState("");
-
   const navigate = useNavigate();
 
-  const isFormComplete =
-    name.trim() !== "" &&
-    age !== "" &&
-    gender !== "" &&
-    contact.trim() !== "";
+  const canContinue = name && age && gender && contact;
 
   function handleContinue() {
-    if (!isFormComplete) {
-      return;
-    }
-
-    navigate("/role", {
-      state: {
-        name: name,
-        age: age,
-        gender: gender,
-        contact: contact
-      }
-    });
+    navigate("/informant", { state: { name, age, gender, contact } });
   }
 
   return (
-    <div className="id-page">
+    <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {loginQuotes.map((quote, i) => (
+        <span key={i} className={`floating-quote floating-quote-${i}`}>
+          {quote}
+        </span>
+      ))}
 
-      <div className="patient-world">
+      <div className="patient-world" style={{ zIndex: 2 }}>
+        <h1 className="patient-title">MedNarrate</h1>
+        <p className="patient-subtitle">Let's create your ID first</p>
 
-        {/* TITLE */}
-        <h1 className="patient-title">
-          MedNarrate
-        </h1>
-
-        <p className="patient-subtitle">
-          Let's create your ID first
-        </p>
-
-
-        {/* FORM */}
-        <div className="patient-form">
-
-          {/* NAME */}
-          <div className="form-field">
-            <p className="question-hint">
-              Name
-            </p>
-
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px", alignItems: "center", marginTop: "20px" }}>
+          <div>
+            <p className="question-hint" style={{ margin: "0 0 6px" }}>Name</p>
             <input
               className="styled-input"
               type="text"
-              placeholder="Enter your full name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-
-
-          {/* AGE */}
-          <div className="form-field">
-            <p className="question-hint">
-              Age
-            </p>
-
+          <div>
+            <p className="question-hint" style={{ margin: "0 0 6px" }}>Age</p>
             <input
               className="styled-input"
               type="number"
-              min="1"
-              max="120"
-              placeholder="Enter your age"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
           </div>
-
-
-          {/* GENDER */}
-          <div className="form-field">
-            <p className="question-hint">
-              Gender
-            </p>
-
-            <div className="gender-options">
-
-              {/* MALE */}
-              <label
-                className={
-                  gender === "Male"
-                    ? "gender-option selected"
-                    : "gender-option"
-                }
-              >
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Male"
-                  checked={gender === "Male"}
-                  onChange={() => setGender("Male")}
-                />
-
-                <span>Male</span>
-              </label>
-
-
-              {/* FEMALE */}
-              <label
-                className={
-                  gender === "Female"
-                    ? "gender-option selected"
-                    : "gender-option"
-                }
-              >
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Female"
-                  checked={gender === "Female"}
-                  onChange={() => setGender("Female")}
-                />
-
-                <span>Female</span>
-              </label>
-
-
-              {/* OTHER */}
-              <label
-                className={
-                  gender === "Other"
-                    ? "gender-option selected"
-                    : "gender-option"
-                }
-              >
-                <input
-                  type="radio"
-                  name="gender"
-                  value="Other"
-                  checked={gender === "Other"}
-                  onChange={() => setGender("Other")}
-                />
-
-                <span>Other</span>
-              </label>
-
-            </div>
+          <div>
+            <p className="question-hint" style={{ margin: "0 0 6px" }}>Gender</p>
+            <select
+              className="styled-select"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="">-- Select --</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </div>
-
-
-          {/* PHONE / EMAIL */}
-          <div className="form-field">
-            <p className="question-hint">
-              Phone or Email
-            </p>
-
+          <div>
+            <p className="question-hint" style={{ margin: "0 0 6px" }}>Phone or Email</p>
             <input
               className="styled-input"
               type="text"
-              placeholder="Enter phone or email"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
             />
           </div>
-
         </div>
 
-
-        {/* CONTINUE */}
         <button
-          type="button"
           className="btn-primary"
-          disabled={!isFormComplete}
+          disabled={!canContinue}
           onClick={handleContinue}
         >
           Continue
         </button>
-
       </div>
-
     </div>
   );
 }

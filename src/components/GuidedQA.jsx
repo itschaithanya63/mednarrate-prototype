@@ -57,6 +57,16 @@ const questions = [
     }
   }
 ];
+const emergencyKeywords = [
+  "chest pain", "can't breathe", "cannot breathe", "breathless", "severe bleeding",
+  "unconscious", "unresponsive", "suicidal", "want to die", "seizure", "fainted",
+  "severe pain", "heart attack", "stroke", "paralysis", "vomiting blood"
+];
+
+function detectEmergency(answers) {
+  const combined = answers.join(" ").toLowerCase();
+  return emergencyKeywords.some((keyword) => combined.includes(keyword));
+}
 
 function GuidedQA() {
   const { language } = useLanguage();
@@ -72,18 +82,23 @@ function GuidedQA() {
 
   const currentQuestion = questions[currentIndex];
   const progressPercent = Math.round(((currentIndex + 1) / questions.length) * 100);
+  const [emergencyDetected, setEmergencyDetected] = useState(false);
 
   function handleNext() {
-    const updatedAnswers = [...allAnswers, answer];
-    setAllAnswers(updatedAnswers);
-    setAnswer("");
+  const updatedAnswers = [...allAnswers, answer];
+  setAllAnswers(updatedAnswers);
+  setAnswer("");
 
-    if (currentIndex === questions.length - 1) {
-      setShowUpload(true);
+  if (currentIndex === questions.length - 1) {
+    if (detectEmergency(updatedAnswers)) {
+      setEmergencyDetected(true);
     } else {
-      setCurrentIndex(currentIndex + 1);
+      setShowUpload(true);
     }
+  } else {
+    setCurrentIndex(currentIndex + 1);
   }
+}
 
 function handleVoiceInput() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -99,10 +114,9 @@ function handleVoiceInput() {
 
   recognition.onstart = () => setListening(true);
   recognition.onend = () => setListening(false);
-  recognition.onerror = (event) => {
-    setListening(false);
-    alert("Couldn't catch that (" + event.error + "). Try again, speak clearly and close to the mic.");
-  };
+ recognition.onerror = () => {
+  setListening(false);
+};
 
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
@@ -110,6 +124,20 @@ function handleVoiceInput() {
   };
 
   recognition.start();
+}
+if (emergencyDetected) {
+  return (
+    <div className="patient-world" style={{ borderTop: "4px solid var(--red)" }}>
+      <div style={{ fontSize: "48px" }}>🚨</div>
+      <h2 className="patient-title" style={{ color: "var(--red)" }}>Please alert staff immediately</h2>
+      <p className="patient-subtitle">
+        Based on your answers, this may need urgent attention. Please inform a nurse or doctor right away — do not wait for your turn in the queue.
+      </p>
+     <button className="btn-primary" onClick={() => { setEmergencyDetected(false); setShowUpload(true); }}>
+  Continue to submit case
+</button>
+    </div>
+  );
 }
 
   if (submitted) {
