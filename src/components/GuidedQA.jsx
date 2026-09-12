@@ -141,14 +141,17 @@ if (emergencyDetected) {
 }
 
   if (submitted) {
-    return (
-      <div className="patient-world">
-        <div className="thankyou-icon">✅</div>
-        <h2 className="thankyou-title">Thank you</h2>
-        <p style={{ color: "#666" }}>Please wait for the doctor.</p>
-      </div>
-    );
-  }
+  return (
+    <div className="patient-world">
+      <div className="thankyou-icon">✅</div>
+      <h2 className="thankyou-title">Thank you</h2>
+      <p style={{ color: "#666" }}>Please wait for the doctor.</p>
+      <button className="btn-primary" onClick={() => (window.location.href = "/")}>
+        Return to Home
+      </button>
+    </div>
+  );
+}
 
   if (showUpload) {
     return (

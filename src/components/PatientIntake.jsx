@@ -21,14 +21,8 @@ function PatientIntake() {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode");
 
-  if (mode === "staff") {
-    return <StaffVitals />;
-  }
-
-  if (mode === "relative") {
-    return <RelativeIntake />;
-  }
-
+  if (mode === "staff") return <StaffVitals />;
+  if (mode === "relative") return <RelativeIntake />;
   return <PatientSelfIntake />;
 }
 
@@ -41,21 +35,14 @@ function PatientSelfIntake() {
         <h2 className="patient-title">Patient Intake</h2>
         <p className="patient-subtitle">Can you speak or type to answer questions?</p>
         <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginTop: "10px" }}>
-          <button className="btn-primary" style={{ marginTop: 0 }} onClick={() => setCanSpeak(true)}>
-            Yes
-          </button>
-          <button className="btn-secondary" style={{ marginTop: 0 }} onClick={() => setCanSpeak(false)}>
-            No
-          </button>
+          <button className="btn-primary" style={{ marginTop: 0 }} onClick={() => setCanSpeak(true)}>Yes</button>
+          <button className="btn-secondary" style={{ marginTop: 0 }} onClick={() => setCanSpeak(false)}>No</button>
         </div>
       </div>
     );
   }
 
-  if (canSpeak === true) {
-    return <GuidedQA />;
-  }
-
+  if (canSpeak === true) return <GuidedQA />;
   return <BodyMap />;
 }
 
@@ -72,6 +59,9 @@ function StaffVitals() {
         <div className="thankyou-icon">✅</div>
         <h2 className="thankyou-title">Thank you</h2>
         <p style={{ color: "var(--text-dim)" }}>Vitals recorded. Please wait for the doctor.</p>
+        <button className="btn-primary" onClick={() => (window.location.href = "/")}>
+          Return to Home
+        </button>
       </div>
     );
   }
@@ -84,39 +74,19 @@ function StaffVitals() {
       <div style={{ display: "flex", flexDirection: "column", gap: "14px", alignItems: "center", marginTop: "10px" }}>
         <div>
           <p className="question-hint" style={{ margin: "0 0 6px" }}>{vitalsLabels.heartRate[language]}</p>
-          <input
-            className="styled-input"
-            type="number"
-            value={heartRate}
-            onChange={(e) => setHeartRate(e.target.value)}
-          />
+          <input className="styled-input" type="number" value={heartRate} onChange={(e) => setHeartRate(e.target.value)} />
         </div>
         <div>
           <p className="question-hint" style={{ margin: "0 0 6px" }}>{vitalsLabels.spo2[language]}</p>
-          <input
-            className="styled-input"
-            type="number"
-            value={spo2}
-            onChange={(e) => setSpo2(e.target.value)}
-          />
+          <input className="styled-input" type="number" value={spo2} onChange={(e) => setSpo2(e.target.value)} />
         </div>
         <div>
           <p className="question-hint" style={{ margin: "0 0 6px" }}>{vitalsLabels.bp[language]}</p>
-          <input
-            className="styled-input"
-            type="text"
-            placeholder="e.g. 120/80"
-            value={bp}
-            onChange={(e) => setBp(e.target.value)}
-          />
+          <input className="styled-input" type="text" placeholder="e.g. 120/80" value={bp} onChange={(e) => setBp(e.target.value)} />
         </div>
       </div>
 
-      <button
-        className="btn-primary"
-        disabled={!heartRate || !spo2 || !bp}
-        onClick={() => setSaved(true)}
-      >
+      <button className="btn-primary" disabled={!heartRate || !spo2 || !bp} onClick={() => setSaved(true)}>
         {vitalsLabels.save[language]}
       </button>
     </div>
@@ -132,21 +102,9 @@ function RelativeIntake() {
       <div className="patient-world">
         <h2 className="patient-title">Relative Providing Information</h2>
         <p className="patient-subtitle">Relationship to patient:</p>
-        <input
-          className="styled-input"
-          type="text"
-          placeholder="e.g. Son, Daughter, Spouse"
-          value={relation}
-          onChange={(e) => setRelation(e.target.value)}
-        />
+        <input className="styled-input" type="text" placeholder="e.g. Son, Daughter, Spouse" value={relation} onChange={(e) => setRelation(e.target.value)} />
         <br />
-        <button
-          className="btn-primary"
-          disabled={!relation}
-          onClick={() => setStarted(true)}
-        >
-          Continue
-        </button>
+        <button className="btn-primary" disabled={!relation} onClick={() => setStarted(true)}>Continue</button>
       </div>
     );
   }

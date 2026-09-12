@@ -15,9 +15,7 @@ function DoctorDashboard() {
   }
 
   const visibleQueue =
-    doctor.specialty === "General Physician"
-      ? patients
-      : patients.filter((p) => p.specialtyNeeded === doctor.specialty);
+    doctor.specialty === "General Physician" ? patients : patients.filter((p) => p.specialtyNeeded === doctor.specialty);
 
   const reminders = getUpcomingReminders();
 
@@ -29,32 +27,31 @@ function DoctorDashboard() {
         <hr />
         <div className="doctor-nav-item">📋 Patient Queue</div>
         <div className="doctor-nav-item">⏰ Reminders ({reminders.length})</div>
+        <hr />
+        <button className="btn-secondary" style={{ marginTop: 0, width: "100%" }} onClick={() => (window.location.href = "/")}>
+          Log Out
+        </button>
       </div>
 
       <div className="doctor-main">
         {!selectedPatient ? (
           <div>
             <h2 className="doctor-heading">Today's Patient Queue</h2>
-            {visibleQueue.length === 0 && (
-              <p style={{ color: "var(--text-dim)" }}>No cases currently assigned to your specialty.</p>
-            )}
+            {visibleQueue.length === 0 && <p style={{ color: "var(--text-dim)" }}>No cases currently assigned to your specialty.</p>}
             {[...visibleQueue].sort((a, b) => (b.emergency ? 1 : 0) - (a.emergency ? 1 : 0)).map((patient) => (
-  <div
-    key={patient.id}
-    onClick={() => setSelectedPatient(patient)}
-    className={`queue-item ${patient.flagged ? "flagged" : ""} ${patient.emergency ? "emergency" : ""}`}
-  >
-    <div>
-      <div className="queue-item-name">{patient.name}</div>
-      <div className="queue-item-meta">
-        via {patient.submittedVia} · {patient.specialtyNeeded}
-        {patient.history.length > 0 && ` · ${patient.history.length} past visit(s)`}
-      </div>
-    </div>
-    {patient.emergency && <span className="flag-pill emergency-pill">🚨 URGENT</span>}
-    {!patient.emergency && patient.flagged && <span className="flag-pill">⚠️ Flagged</span>}
-  </div>
-))}
+              <div key={patient.id} onClick={() => setSelectedPatient(patient)} className={`queue-item ${patient.flagged ? "flagged" : ""} ${patient.emergency ? "emergency" : ""}`}>
+                <div>
+                  <div className="queue-item-name">{patient.name}</div>
+                  <div className="queue-item-meta">
+                    via {patient.submittedVia} · {patient.specialtyNeeded}
+                    {patient.history.length > 0 && ` · ${patient.history.length} past visit(s)`}
+                  </div>
+                </div>
+                {patient.emergency && <span className="flag-pill emergency-pill">🚨 URGENT</span>}
+                {!patient.emergency && patient.flagged && <span className="flag-pill">⚠️ Flagged</span>}
+              </div>
+            ))}
+
             {reminders.length > 0 && (
               <div style={{ marginTop: "30px" }}>
                 <h2 className="doctor-heading" style={{ fontSize: "18px" }}>Upcoming Follow-up Reminders</h2>
@@ -67,11 +64,7 @@ function DoctorDashboard() {
             )}
           </div>
         ) : (
-          <PatientCaseDetail
-            patient={selectedPatient}
-            onBack={() => setSelectedPatient(null)}
-            addVisit={addVisit}
-          />
+          <PatientCaseDetail patient={selectedPatient} onBack={() => setSelectedPatient(null)} addVisit={addVisit} />
         )}
       </div>
     </div>
@@ -81,28 +74,18 @@ function DoctorDashboard() {
 function PatientCaseDetail({ patient, onBack, addVisit }) {
   const [diagnosis, setDiagnosis] = useState("");
   const [followUpDays, setFollowUpDays] = useState("");
-  const [prescriptionRows, setPrescriptionRows] = useState([
-    { id: 1, name: "", dosage: "", duration: "" }
-  ]);
+  const [prescriptionRows, setPrescriptionRows] = useState([{ id: 1, name: "", dosage: "", duration: "" }]);
   const [confirmed, setConfirmed] = useState(false);
 
   function addRow() {
-    setPrescriptionRows([
-      ...prescriptionRows,
-      { id: Date.now(), name: "", dosage: "", duration: "" }
-    ]);
+    setPrescriptionRows([...prescriptionRows, { id: Date.now(), name: "", dosage: "", duration: "" }]);
   }
-
   function updateRow(id, field, value) {
-    setPrescriptionRows(
-      prescriptionRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
-    );
+    setPrescriptionRows(prescriptionRows.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
   }
-
   function removeRow(id) {
     setPrescriptionRows(prescriptionRows.filter((row) => row.id !== id));
   }
-
   function handleConfirm() {
     const visit = {
       date: new Date().toLocaleDateString(),
@@ -143,11 +126,7 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
         {prescriptionRows.filter(r => r.name).length > 0 && (
           <div style={{ marginTop: "10px" }}>
             <strong>Prescription:</strong>
-            <ul>
-              {prescriptionRows.filter(r => r.name).map((r) => (
-                <li key={r.id}>{r.name} — {r.dosage} — {r.duration}</li>
-              ))}
-            </ul>
+            <ul>{prescriptionRows.filter(r => r.name).map((r) => <li key={r.id}>{r.name} — {r.dosage} — {r.duration}</li>)}</ul>
           </div>
         )}
 
@@ -159,9 +138,10 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
           <button className="btn-secondary" onClick={handleWhatsAppShare}>💬 WhatsApp</button>
         </div>
 
-        <button className="btn-primary" onClick={onBack} style={{ display: "block", marginTop: "20px" }}>
-          Back to Queue
-        </button>
+        <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+          <button className="btn-primary" onClick={onBack}>Back to Queue</button>
+          <button className="btn-secondary" onClick={() => (window.location.href = "/")}>Log Out</button>
+        </div>
       </div>
     );
   }
@@ -184,13 +164,8 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
         </ul>
       )}
 
-      {patient.region && (
-        <p>Pain reported: <strong>{patient.region}</strong>, level <strong>{patient.pain}/10</strong></p>
-      )}
-
-      {patient.heartRate && (
-        <p>Vitals: HR {patient.heartRate} bpm, SpO2 {patient.spo2}%, BP {patient.bp}</p>
-      )}
+      {patient.region && <p>Pain reported: <strong>{patient.region}</strong>, level <strong>{patient.pain}/10</strong></p>}
+      {patient.heartRate && <p>Vitals: HR {patient.heartRate} bpm, SpO2 {patient.spo2}%, BP {patient.bp}</p>}
 
       {patient.history.length > 0 && (
         <div style={{ marginTop: "20px" }}>
@@ -199,14 +174,8 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
             <div key={i} className="review-item" style={{ marginBottom: "10px" }}>
               <div className="review-question">Visit on {visit.date}</div>
               <div className="review-answer">Diagnosis: {visit.diagnosis || "N/A"}</div>
-              {visit.prescription.length > 0 && (
-                <div className="review-answer">
-                  Prescribed: {visit.prescription.map(p => p.name).join(", ")}
-                </div>
-              )}
-              {visit.followUpDays && (
-                <div className="review-answer">Follow-up was set for {visit.followUpDays} days later</div>
-              )}
+              {visit.prescription.length > 0 && <div className="review-answer">Prescribed: {visit.prescription.map(p => p.name).join(", ")}</div>}
+              {visit.followUpDays && <div className="review-answer">Follow-up was set for {visit.followUpDays} days later</div>}
             </div>
           ))}
         </div>
@@ -214,38 +183,16 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
 
       <div style={{ marginTop: "20px" }}>
         <p style={{ fontWeight: "600", marginBottom: "6px" }}>Diagnosis / Treatment notes</p>
-        <textarea
-          className="case-textarea"
-          value={diagnosis}
-          onChange={(e) => setDiagnosis(e.target.value)}
-        />
+        <textarea className="case-textarea" value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} />
       </div>
 
       <div style={{ marginTop: "20px" }}>
         <p style={{ fontWeight: "600", marginBottom: "10px" }}>Prescription</p>
         {prescriptionRows.map((row) => (
           <div key={row.id} style={{ display: "flex", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
-            <input
-              className="styled-input"
-              style={{ width: "150px" }}
-              placeholder="Medicine name"
-              value={row.name}
-              onChange={(e) => updateRow(row.id, "name", e.target.value)}
-            />
-            <input
-              className="styled-input"
-              style={{ width: "120px" }}
-              placeholder="Dosage"
-              value={row.dosage}
-              onChange={(e) => updateRow(row.id, "dosage", e.target.value)}
-            />
-            <input
-              className="styled-input"
-              style={{ width: "120px" }}
-              placeholder="Duration"
-              value={row.duration}
-              onChange={(e) => updateRow(row.id, "duration", e.target.value)}
-            />
+            <input className="styled-input" style={{ width: "150px" }} placeholder="Medicine name" value={row.name} onChange={(e) => updateRow(row.id, "name", e.target.value)} />
+            <input className="styled-input" style={{ width: "120px" }} placeholder="Dosage" value={row.dosage} onChange={(e) => updateRow(row.id, "dosage", e.target.value)} />
+            <input className="styled-input" style={{ width: "120px" }} placeholder="Duration" value={row.duration} onChange={(e) => updateRow(row.id, "duration", e.target.value)} />
             <button className="btn-small" onClick={() => removeRow(row.id)}>Remove</button>
           </div>
         ))}
@@ -254,19 +201,11 @@ Follow-up: ${followUpDays ? followUpDays + " days" : "Not scheduled"}`;
 
       <div style={{ marginTop: "20px" }}>
         <p style={{ fontWeight: "600", margin: "0 0 6px" }}>Follow-up in how many days?</p>
-        <input
-          type="number"
-          value={followUpDays}
-          onChange={(e) => setFollowUpDays(e.target.value)}
-          className="styled-input"
-          style={{ width: "100px" }}
-        />
+        <input type="number" value={followUpDays} onChange={(e) => setFollowUpDays(e.target.value)} className="styled-input" style={{ width: "100px" }} />
       </div>
 
       <div>
-        <button className="btn-primary" onClick={handleConfirm}>
-          Doctor Confirms & Save
-        </button>
+        <button className="btn-primary" onClick={handleConfirm}>Doctor Confirms & Save</button>
       </div>
     </div>
   );
