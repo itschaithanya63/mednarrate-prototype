@@ -10,7 +10,9 @@ function CameraCapture({ onDone }) {
   useEffect(() => {
     async function startCamera() {
       try {
-        const s = await navigator.mediaDevices.getUserMedia({ video: true });
+        const s = await navigator.mediaDevices.getUserMedia({
+  video: { facingMode: { ideal: "environment" } }
+});
         setStream(s);
         if (videoRef.current) {
           videoRef.current.srcObject = s;

@@ -12,7 +12,7 @@ function Landing() {
 
       <div className="landing-cards">
         <div className="landing-card" onClick={() => navigate("/patient-id")}>
-          <div className="landing-icon">🧑‍🤝‍🧑</div>
+          <div className="landing-icon">🧍</div>
           <h2>Patient</h2>
           <p>Start a case, describe symptoms, or provide information on behalf of a patient.</p>
         </div>
